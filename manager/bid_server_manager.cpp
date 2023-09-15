@@ -1,5 +1,4 @@
 //
-// Created by Chu, Tong on 9/15/23.
 //
 
 #include "bid_server_manager.h"
