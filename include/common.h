@@ -1,5 +1,4 @@
 //
-// Created by Chu, Tong on 9/15/23.
 //
 
 #ifndef BIDDING_MODEL_SERVER_COMMON_CONST_H_
