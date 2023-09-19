@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+
+service AdBidderService {
+    rpc bidAd (BidRequest) returns (BidResponse);
+}
+
+message BidRequest {
+    string id = 1;  // 请求唯一标识符
+    Publisher publisher = 2;  // 广告请求的发布者信息
+    Site site = 3;  // 广告请求的网站信息
+    Device device = 4;  // 用户设备信息
+    User user = 5;  // 用户信息
+    repeated Impression impressions = 6;  // 广告位信息列表
+}
+
+message Publisher {
+    string id = 1;  // 发布者唯一标识符
+}
+
+message Site {
+    string id = 1;  // 网站唯一标识符
+    string name = 2;  // 网站名称
+}
+
+message Device {
+    string id = 1;  // 设备唯一标识符
+    string os = 2;  // 设备操作系统
+    string model = 3;  // 设备型号
+}
+
+message User {
+    string id = 1;  // 用户唯一标识符
+    string gender = 2;  // 用户性别
+    int32 age = 3;  // 用户年龄
+}
+
+message Impression {
+    string id = 1;  // 广告位唯一标识符
+    string ad_type = 2;  // 广告类型
+    double bid_floor = 3;  // 最低出价
+}
+
+message BidResponse {
+    string id = 1;  // RTB 请求的唯一标识符，用于关联响应和请求
+    repeated SeatBid seat_bids = 2;  // 座位出价信息列表
+    // 其他响应相关字段...
+}
+
+message SeatBid {
+    repeated Bid bids = 1;  // 出价信息列表
+    // 其他座位出价相关字段...
+}
+
+message Bid {
+    string id = 1;  // 出价唯一标识符
+    string imp_id = 2;  // 关联的广告位唯一标识符
+    double price = 3;  // 出价价格
+    string adid = 4;  // 广告唯一标识符
+    string nurl = 5;  // 曝光通知 URL
+    string adm = 6;  // 广告内容（HTML、VAST、等）
+    // 其他出价相关字段...
+}
+

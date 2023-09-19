@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
+#include "../service/bid_service.h"
 
 class BidServerManager {
  public:
@@ -16,6 +18,7 @@ class BidServerManager {
   int thread_num;
   int send_timeout;
   int recv_timeout;
+  std::shared_ptr<BidService> bid_service;
 };
 
 #endif //BIDDING_MODEL_SERVER_MANAGER_BID_SERVER_MANAGER_H_
