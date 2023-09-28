@@ -4,11 +4,11 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "ad_index.h"
+#include "campaign_index.h"
 
 
 // this is just an example, use binary file for prd usage
-int AdIndex::load(const std::string filename) {
+int CampaignIndex::load(const std::string filename) {
   std::ifstream inputFile(filename);
   if (!inputFile.is_open()) {
     std::cerr << "Failed to open file: " << filename << std::endl;
@@ -19,33 +19,33 @@ int AdIndex::load(const std::string filename) {
   while (std::getline(inputFile, line)) {
     std::istringstream iss(line);
     int32_t id;
-    int64_t budget;
-    int32_t campaign_id;
-    int64_t price;
+    int32_t start_time;
+    int32_t end_time;
 
-    if (!(iss >> id >> budget >> campaign_id >> price)) {
+    if (!(iss >> id >> start_time >> end_time)) {
       std::cerr << "Error reading data from file: " << filename << std::endl;
       return -1;  // Return an error code
     }
-    std::cout << "ad: " << id << ", " << budget << ", " << campaign_id << ", " << price << std::endl;
 
-    Ad ad(id, budget, price, campaign_id);
-    adMap.insert(std::make_pair(id, ad));
+    std::cout << "campaign: " << id << ", " << start_time << ", " << end_time << std::endl;
+
+    Campaign campaign(id, start_time, end_time);
+    campaignMap.insert(std::make_pair(id, campaign));
   }
 
   inputFile.close();
   return 0;
 }
 
-int AdIndex::dump(const std::string filename) {
+int CampaignIndex::dump(const std::string filename) {
   std::ofstream outputFile(filename);
   if (!outputFile.is_open()) {
     std::cerr << "Failed to open file: " << filename << std::endl;
     return -1;
   }
 
-  for (const auto& entry : adMap) {
-    outputFile << entry.first << " " << entry.second.budget << std::endl;
+  for (const auto &entry : campaignMap) {
+    outputFile << entry.first << " " << entry.second.start_time << " " << entry.second.end_time << std::endl;
   }
 
   outputFile.close();

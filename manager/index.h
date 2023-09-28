@@ -6,9 +6,11 @@
 
 #include <string>
 
-class Index {
+// base index
+class BaseIndex {
  public:
-  Index(): inUseCount(0) {}
+  BaseIndex(): inUseCount(0) {}
+  virtual ~BaseIndex() {}
   virtual int load(const std::string filename) = 0; // load index from file
   virtual int dump(const std::string filename) = 0; // dump index to file
  public:
