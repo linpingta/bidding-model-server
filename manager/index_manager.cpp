@@ -53,9 +53,9 @@ std::string IndexManager::getIndexConfigFile(const std::string folderPath, const
 }
 
 BaseIndex* IndexManager::createIndex(const int32_t num) {
-  if (num == 0) {
+  if (num == kAdIndex) {
     return new (std::nothrow) AdIndex();
-  } else if (num == 1) {
+  } else if (num == kCampaignIndex) {
     return new (std::nothrow) CampaignIndex();
   } else {
     throw std::invalid_argument("Invalid value of input");

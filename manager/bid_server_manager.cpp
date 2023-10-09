@@ -47,7 +47,7 @@ int BidServerManager::init(std::string config_filename) {
     return -1;
   }
 
-  return 1;
+  return 0;
 }
 
 void BidServerManager::run() {
