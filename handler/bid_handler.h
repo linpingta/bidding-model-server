@@ -17,9 +17,8 @@ class BidHandler {
   bool reqFilter(const BidReqData& bidReqData);
   std::unordered_map<int32_t, Campaign> campaignFilter(const BidReqData& bidReqData);
   std::unordered_map<int32_t, Ad> adFilter(const BidReqData& bidReqData, const std::unordered_map<int32_t, Campaign>& campaignMap);
-  bool rank();
-  std::vector<Ad> selectAds();
-  BidRspData fillResponse(const BidReqData& bidReqData, std::vector<Ad> rspAdList);
+  std::vector<Ad> rank(const std::unordered_map<int32_t, Ad>& adMap);
+  BidRspData fillResponse(const BidReqData& bidReqData, std::vector<Ad> candidateAdList, int32_t rspAdNum);
  private:
   IndexManager* index_manager_;
   log4cpp::Category* logger_;

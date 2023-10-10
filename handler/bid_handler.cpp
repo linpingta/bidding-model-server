@@ -25,6 +25,31 @@ void BidHandler::Bid(const BidReqData& bidReqData, BidRspData& bidRspData) {
     logger_->info("no ad after ad check");
     return;
   }
+
+  // rank
+  auto rankAdList = rank(adMap);
+
+  // select and fill rsp
+  int32_t rspAdNum = 1;
+  bidRspData = fillResponse(bidReqData, rankAdList, rspAdNum);
+}
+
+// Comparison function to sort Ads by price in descending order
+bool compareAdsByPriceDescending(const Ad& ad1, const Ad& ad2) {
+  return ad1.price > ad2.price;
+}
+
+std::vector<Ad> BidHandler::rank(const std::unordered_map<int32_t, Ad>& adMap) {
+  std::vector<Ad> adVector;
+
+  for (const auto& entry : adMap) {
+    adVector.push_back(entry.second);
+  }
+
+  // Sort the vector in descending order by price
+  std::sort(adVector.begin(), adVector.end(), compareAdsByPriceDescending);
+
+  return adVector;
 }
 
 bool BidHandler::reqFilter(const BidReqData &bidReqData) {
@@ -84,16 +109,13 @@ std::unordered_map<int32_t, Ad> BidHandler::adFilter(const BidReqData& bidReqDat
   return filteredMap;
 }
 
-bool BidHandler::rank() {
-  return false;
-}
+BidRspData BidHandler::fillResponse(const BidReqData& bidReqData, std::vector<Ad> candidateAdList, int32_t rspAdNum) {
+  auto b = BidRspData();
 
-std::vector<Ad> BidHandler::selectAds() {
-  std::vector<Ad> ads;
-  return ads;
-}
-
-BidRspData BidHandler::fillResponse(const BidReqData& bidReqData, std::vector<Ad> rspAdList) {
+  for (const auto& elem: candidateAdList) {
+    b.request_id = bidReqData.getRequestId();
+    b.addAd(elem.id, elem.price);
+  }
   return BidRspData();
 }
 
