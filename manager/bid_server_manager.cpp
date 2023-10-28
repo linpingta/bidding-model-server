@@ -9,16 +9,15 @@
 
 #include <grpcpp/grpcpp.h>
 
-
-//#include "../proto/ad_bid.pb.h"
-//#include "../proto/ad_bid.grpc.pb.h"
+//#include "../proto.bak/ad_bid.pb.h"
+//#include "../proto.bak/ad_bid.grpc.pb.h"
 //using grpc::Server;
 //using grpc::ServerBuilder;
 //using grpc::ServerContext;
 //using grpc::Status;
 //using ad::BidRequest;
 //using ad::BidResponse;
-//
+
 //class BidService final : public ad::AdBidderService::Service {
 // public:
 //  Status bidAd(ServerContext* context, const BidRequest* request, BidResponse* response) {
@@ -54,16 +53,16 @@ void BidServerManager::run() {
   std::string server_address("0.0.0.0:50051");
 
   auto bid_service = std::make_shared<BidService>();
-  bid_service->bidAdTest();
+//  bid_service->bidAdTest();
 
 //  // test later for protobuf
-//  ServerBuilder builder;
-//  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-//  builder.RegisterService(bid_service.get());
-//
-//  std::unique_ptr<Server> server(builder.BuildAndStart());
-//  std::cout << "Server listening on " << server_address << std::endl;
-//  server->Wait();
+  ServerBuilder builder;
+  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+  builder.RegisterService(bid_service.get());
+
+  std::unique_ptr<Server> server(builder.BuildAndStart());
+  std::cout << "Server listening on " << server_address << std::endl;
+  server->Wait();
 
 }
 
