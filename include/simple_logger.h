@@ -1,142 +1,157 @@
-// Simple logger implementation to replace log4cpp
-//
-#ifndef BIDDING_MODEL_SERVER_INCLUDE_SIMPLE_LOGGER_H_
-#define BIDDING_MODEL_SERVER_INCLUDE_SIMPLE_LOGGER_H_
+#ifndef BIDDING_MODEL_SERVER_SIMPLE_LOGGER_H
+#define BIDDING_MODEL_SERVER_SIMPLE_LOGGER_H
 
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <ctime>
+#include <cstdio>
+#include <stdarg.h>
 
-enum class LogLevel {
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR,
-    FATAL
+enum LogLevel {
+    LOG_DEBUG,
+    LOG_INFO,
+    LOG_WARN,
+    LOG_ERROR,
+    LOG_FATAL
 };
 
 class SimpleLogger {
 public:
-    SimpleLogger() : level_(LogLevel::INFO) {}
-    
     static SimpleLogger& getInstance() {
         static SimpleLogger instance;
         return instance;
     }
-    
+
     void setLevel(LogLevel level) {
-        level_ = level;
+        currentLevel = level;
     }
-    
-    template<typename... Args>
-    void debug(const char* format, Args... args) {
-        log(LogLevel::DEBUG, format, args...);
+
+    void debug(const std::string& message) {
+        if (currentLevel <= LOG_DEBUG) {
+            log(LOG_DEBUG, message);
+        }
     }
-    
-    template<typename... Args>
-    void info(const char* format, Args... args) {
-        log(LogLevel::INFO, format, args...);
+
+    void info(const std::string& message) {
+        if (currentLevel <= LOG_INFO) {
+            log(LOG_INFO, message);
+        }
     }
-    
-    template<typename... Args>
-    void warn(const char* format, Args... args) {
-        log(LogLevel::WARN, format, args...);
+
+    void warn(const std::string& message) {
+        if (currentLevel <= LOG_WARN) {
+            log(LOG_WARN, message);
+        }
     }
-    
-    template<typename... Args>
-    void error(const char* format, Args... args) {
-        log(LogLevel::ERROR, format, args...);
+
+    void error(const std::string& message) {
+        if (currentLevel <= LOG_ERROR) {
+            log(LOG_ERROR, message);
+        }
     }
-    
-    template<typename... Args>
-    void fatal(const char* format, Args... args) {
-        log(LogLevel::FATAL, format, args...);
+
+    void fatal(const std::string& message) {
+        if (currentLevel <= LOG_FATAL) {
+            log(LOG_FATAL, message);
+        }
     }
-    
+
+    // Format versions
+    void debug(const char* format, ...) {
+        if (currentLevel <= LOG_DEBUG) {
+            va_list args;
+            va_start(args, format);
+            logFormatted(LOG_DEBUG, format, args);
+            va_end(args);
+        }
+    }
+
+    void info(const char* format, ...) {
+        if (currentLevel <= LOG_INFO) {
+            va_list args;
+            va_start(args, format);
+            logFormatted(LOG_INFO, format, args);
+            va_end(args);
+        }
+    }
+
+    void warn(const char* format, ...) {
+        if (currentLevel <= LOG_WARN) {
+            va_list args;
+            va_start(args, format);
+            logFormatted(LOG_WARN, format, args);
+            va_end(args);
+        }
+    }
+
+    void error(const char* format, ...) {
+        if (currentLevel <= LOG_ERROR) {
+            va_list args;
+            va_start(args, format);
+            logFormatted(LOG_ERROR, format, args);
+            va_end(args);
+        }
+    }
+
+    void fatal(const char* format, ...) {
+        if (currentLevel <= LOG_FATAL) {
+            va_list args;
+            va_start(args, format);
+            logFormatted(LOG_FATAL, format, args);
+            va_end(args);
+        }
+    }
+
     void shutdown() {
-        // No cleanup needed for simple logger
+        // No cleanup needed
     }
-    
+
 private:
-    LogLevel level_;
+    SimpleLogger() : currentLevel(LOG_INFO) {}
     
-    std::string getCurrentTime() {
+    void log(LogLevel level, const std::string& message) {
         time_t now = time(0);
-        char buf[80];
+        char timeBuffer[80];
+        
         #ifdef _WIN32
-        struct tm tm;
-        localtime_s(&tm, &now);
-        strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tm);
+        struct tm localTime;
+        localtime_s(&localTime, &now);
+        strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", &localTime);
         #else
-        strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
+        struct tm* localTime = localtime(&now);
+        strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", localTime);
         #endif
-        return std::string(buf);
-    }
-    
-    std::string levelToString(LogLevel level) {
+        
+        std::string levelStr;
         switch (level) {
-            case LogLevel::DEBUG: return "DEBUG";
-            case LogLevel::INFO: return "INFO";
-            case LogLevel::WARN: return "WARN";
-            case LogLevel::ERROR: return "ERROR";
-            case LogLevel::FATAL: return "FATAL";
-            default: return "UNKNOWN";
-        }
-    }
-    
-    template<typename T>
-    void formatArg(std::ostringstream& oss, const T& arg) {
-        oss << arg;
-    }
-    
-    template<typename T, typename... Args>
-    void formatArg(std::ostringstream& oss, const T& arg, Args... args) {
-        oss << arg;
-        formatArg(oss, args...);
-    }
-    
-    template<typename... Args>
-    void log(LogLevel level, const char* format, Args... args) {
-        if (level < level_) {
-            return;
+            case LOG_DEBUG: levelStr = "DEBUG";
+                break;
+            case LOG_INFO: levelStr = "INFO";
+                break;
+            case LOG_WARN: levelStr = "WARN";
+                break;
+            case LOG_ERROR: levelStr = "ERROR";
+                break;
+            case LOG_FATAL: levelStr = "FATAL";
+                break;
+            default: levelStr = "UNKNOWN";
         }
         
-        std::ostringstream oss;
-        oss << "[" << getCurrentTime() << "] [" << levelToString(level) << "] ";
-        
-        // Simple format implementation
-        const char* p = format;
-        int argIndex = 0;
-        
-        while (*p) {
-            if (*p == '%' && *(p+1) == 'd') {
-                oss << std::get<argIndex>(std::make_tuple(args...));
-                argIndex++;
-                p += 2;
-            } else if (*p == '%' && *(p+1) == 's') {
-                oss << std::get<argIndex>(std::make_tuple(args...));
-                argIndex++;
-                p += 2;
-            } else if (*p == '%' && *(p+1) == 'f') {
-                oss << std::get<argIndex>(std::make_tuple(args...));
-                argIndex++;
-                p += 2;
-            } else {
-                oss << *p;
-                p++;
-            }
-        }
-        
-        std::cout << oss.str() << std::endl;
+        std::cout << "[" << timeBuffer << "] [" << levelStr << "] " << message << std::endl;
     }
+    
+    void logFormatted(LogLevel level, const char* format, va_list args) {
+        char buffer[1024];
+        vsnprintf(buffer, sizeof(buffer), format, args);
+        log(level, std::string(buffer));
+    }
+    
+    LogLevel currentLevel;
 };
 
-// Global logger instance
 extern SimpleLogger* gLogger;
 
-// Helper functions
 void initLogger();
 SimpleLogger* getLogger();
 
-#endif // BIDDING_MODEL_SERVER_INCLUDE_SIMPLE_LOGGER_H_
+#endif

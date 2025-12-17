@@ -2,6 +2,7 @@
 //
 
 #include "bid_handler.h"
+#include <algorithm>
 
 void BidHandler::Init() {
   index_manager_ = IndexManager::getInstance();
@@ -110,13 +111,17 @@ std::unordered_map<int32_t, Ad> BidHandler::adFilter(const BidReqData& bidReqDat
 }
 
 BidRspData BidHandler::fillResponse(const BidReqData& bidReqData, std::vector<Ad> candidateAdList, int32_t rspAdNum) {
-  auto b = BidRspData();
+  BidRspData rsp;
+  rsp.req_id = bidReqData.req_id;
+  rsp.user_id = bidReqData.user_id;
 
-  for (const auto& elem: candidateAdList) {
-    b.request_id = bidReqData.getRequestId();
-    b.addAd(elem.id, elem.price);
+  if (!candidateAdList.empty()) {
+    const Ad& selectedAd = candidateAdList[0];
+    rsp.ad_id = selectedAd.id;
+    rsp.win_price = selectedAd.price;
   }
-  return BidRspData();
+
+  return rsp;
 }
 
 

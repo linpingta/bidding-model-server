@@ -1,3 +1,0 @@
-C:/Users/tchu/PycharmProjects/bidding-model-server/build/CMakeFiles/bidding_model_server.dir
-C:/Users/tchu/PycharmProjects/bidding-model-server/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/tchu/PycharmProjects/bidding-model-server/build/CMakeFiles/ZERO_CHECK.dir

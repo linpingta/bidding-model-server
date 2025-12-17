@@ -8,6 +8,15 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 option(USE_SYSTEM_LIBS "Use system installed libraries" OFF)
 
 # Find dependencies
+# Add vcpkg paths to search for libraries when USE_SYSTEM_LIBS is ON
+if(USE_SYSTEM_LIBS)
+    set(VCPKG_INSTALL_DIR "C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows")
+    list(APPEND CMAKE_PREFIX_PATH ${VCPKG_INSTALL_DIR})
+    list(APPEND CMAKE_INCLUDE_PATH ${VCPKG_INSTALL_DIR}/include)
+    list(APPEND CMAKE_LIBRARY_PATH ${VCPKG_INSTALL_DIR}/lib)
+    list(APPEND CMAKE_PROGRAM_PATH ${VCPKG_INSTALL_DIR}/tools/protobuf)
+endif()
+
 find_package(protobuf CONFIG QUIET)
 if(NOT protobuf_FOUND)
     find_package(Protobuf REQUIRED)
@@ -23,9 +32,9 @@ endif()
 
 find_package(gRPC CONFIG QUIET)
 if(NOT gRPC_FOUND)
-    find_package(GRPC REQUIRED)
-    set(gRPC_LIBRARIES ${GRPC_LIBRARIES})
-    set(gRPC_INCLUDE_DIRS ${GRPC_INCLUDE_DIRS})
+    # Try to find gRPC manually
+    set(gRPC_INCLUDE_DIRS "${VCPKG_INSTALL_DIR}/include")
+    set(gRPC_LIBRARIES "${VCPKG_INSTALL_DIR}/lib/grpc++.lib")
     set(gRPC_FOUND TRUE)
 else()
     set(gRPC_LIBRARIES gRPC::grpc++)
@@ -35,9 +44,9 @@ endif()
 find_package(OpenSSL REQUIRED)
 find_package(yaml-cpp CONFIG QUIET)
 if(NOT yaml-cpp_FOUND)
-    find_package(YAML-CPP REQUIRED)
-    set(yaml-cpp_LIBRARIES ${YAML-CPP_LIBRARIES})
-    set(yaml-cpp_INCLUDE_DIRS ${YAML-CPP_INCLUDE_DIRS})
+    # Try to find yaml-cpp manually
+    set(yaml-cpp_INCLUDE_DIRS "${VCPKG_INSTALL_DIR}/include")
+    set(yaml-cpp_LIBRARIES "${VCPKG_INSTALL_DIR}/lib/yaml-cpp.lib")
     set(yaml-cpp_FOUND TRUE)
 else()
     set(yaml-cpp_LIBRARIES yaml-cpp::yaml-cpp)
@@ -73,6 +82,7 @@ set(SOURCES
     manager/ad_index.cpp
     manager/campaign_index.cpp
     service/bid_service.cpp
+    handler/bid_handler.cpp
     proto/ad_bid.pb.cc
     proto/ad_bid.grpc.pb.cc
 )
