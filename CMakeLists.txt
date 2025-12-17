@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Option to use system libraries or local libraries
-option(USE_SYSTEM_LIBS "Use system installed libraries" ON)
+option(USE_SYSTEM_LIBS "Use system installed libraries" OFF)
 
 # Find dependencies
 find_package(protobuf CONFIG QUIET)
@@ -44,12 +44,10 @@ else()
     set(yaml-cpp_INCLUDE_DIRS ${yaml-cpp_INCLUDE_DIRS})
 endif()
 
-# Find log4cpp
-find_path(LOG4CPP_INCLUDE_DIR log4cpp/Category.hh)
-find_library(LOG4CPP_LIBRARY NAMES log4cpp liblog4cpp)
-if(NOT LOG4CPP_INCLUDE_DIR OR NOT LOG4CPP_LIBRARY)
-    message(FATAL_ERROR "log4cpp not found. Please install log4cpp.")
-endif()
+# Use project's built-in log4cpp headers
+set(LOG4CPP_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/log4cpp)
+set(LOG4CPP_LIBRARY "")
+message(STATUS "Using built-in log4cpp headers from ${LOG4CPP_INCLUDE_DIR}")
 
 message(STATUS "Using protobuf: ${protobuf_INCLUDE_DIRS}, ${protobuf_LIBRARIES}")
 message(STATUS "Using gRPC: ${gRPC_INCLUDE_DIRS}, ${gRPC_LIBRARIES}")
@@ -83,6 +81,8 @@ set(SOURCES
 set(HEADERS
     include/common.h
     include/const.h
+    include/simple_logger.h
+    handler/bid_handler.h
     manager/bid_server_manager.h
     manager/index_manager.h
     manager/index.h
@@ -97,14 +97,29 @@ set(HEADERS
 add_executable(bidding_model_server ${SOURCES} ${HEADERS})
 
 # Link libraries
-target_link_libraries(bidding_model_server
-    ${protobuf_LIBRARIES}
-    ${gRPC_LIBRARIES}
-    ${yaml-cpp_LIBRARIES}
-    ${LOG4CPP_LIBRARY}
-    OpenSSL::SSL
-    OpenSSL::Crypto
-)
+if(MSVC)
+    # For Visual Studio - use vcpkg managed libraries
+    target_link_libraries(bidding_model_server
+        ${protobuf_LIBRARIES}
+        ${gRPC_LIBRARIES}
+        ${yaml-cpp_LIBRARIES}
+        OpenSSL::SSL
+        OpenSSL::Crypto
+    )
+else()
+    # For MinGW - use system libraries or vcpkg libraries
+    target_link_libraries(bidding_model_server
+        ${protobuf_LIBRARIES}
+        ${gRPC_LIBRARIES}
+        ${yaml-cpp_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
+    )
+endif()
+
+# Windows specific libraries
+if(WIN32)
+    target_link_libraries(bidding_model_server ws2_32 wsock32)
+endif()
 
 # Set output directory
 set_target_properties(bidding_model_server PROPERTIES

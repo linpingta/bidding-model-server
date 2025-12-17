@@ -23,6 +23,6 @@ int main() {
 
   logger->info("shutdown service");
 
-  log4cpp::Category::shutdown();
+  gLogger->shutdown();
   return 0;
 }

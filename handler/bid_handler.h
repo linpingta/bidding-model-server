@@ -10,7 +10,6 @@
 #include "../manager/index_manager.h"
 #include "../manager/campaign_index.h"
 #include "../manager/ad_index.h"
-#include "../include/log4cpp/Category.hh"
 
 class BidHandler {
  public:
@@ -25,7 +24,7 @@ class BidHandler {
   BidRspData fillResponse(const BidReqData& bidReqData, std::vector<Ad> candidateAdList, int32_t rspAdNum);
  private:
   IndexManager* index_manager_;
-  log4cpp::Category* logger_;
+  SimpleLogger* logger_;
 };
 
 #endif //BIDDING_MODEL_SERVER_HANDLER_BID_HANDLER_H_

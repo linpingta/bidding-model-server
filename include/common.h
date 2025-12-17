@@ -4,15 +4,15 @@
 #ifndef BIDDING_MODEL_SERVER_COMMON_CONST_H_
 #define BIDDING_MODEL_SERVER_COMMON_CONST_H_
 
-#include "log4cpp/Category.hh"
+#include "simple_logger.h"
 #include <string>
 #include <vector>
 
 // logger
-extern log4cpp::Category* gLogger;
+extern SimpleLogger* gLogger;
 
 void initLogger();
-log4cpp::Category* getLogger();
+SimpleLogger* getLogger();
 
 
 struct AdInfo {
