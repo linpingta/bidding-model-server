@@ -103,9 +103,11 @@ To get the DSP Bidding Model Server up and running, follow these steps:
 
 The server reads configuration from `config.yaml` file, which should be located in the same directory as the executable. The configuration includes:
 
-- Server port
-- Timeout settings
-- Index configuration paths
+- `port`: Server listening port (default: 50051)
+- `send_timeout`: Send timeout in milliseconds (default: 300)
+- `recv_timeout`: Receive timeout in milliseconds (default: 300)
+- `thread_num`: Number of worker threads (default: 10)
+- `index_folder_path`: Path to index data files (optional, required for index loading)
 
 ### API
 
@@ -148,7 +150,7 @@ After successfully building the server, run it:
   ./bin/bidding_model_server
   ```
 
-The server will start listening on `0.0.0.0:50051` by default.
+The server will start listening on the port specified in `config.yaml` (default: `0.0.0.0:50051`).
 
 ### Example Client Code
 
@@ -243,7 +245,7 @@ The project is currently in development phase with core functionality implemente
 - ✅ YAML configuration support
 
 TODO:
-- Complete implementation of campaign and ad filtering logic
+- ✅ Complete implementation of campaign and ad filtering logic
 - Add more comprehensive tests
 - Implement advanced bidding strategies
 - Add monitoring and metrics collection

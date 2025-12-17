@@ -31,12 +31,12 @@ int BidServerManager::init(std::string config_filename) {
 
   YAML::Node config = YAML::LoadFile(config_filename);
 
-  this->port = config["port"].as<int>(kThreadNum);
+  this->port = config["port"].as<int>(kDefaultPort);
   this->send_timeout = config["send_timeout"].as<int>(kSendTimeout);
   this->recv_timeout = config["recv_timeout"].as<int>(kRecvTimeout);
 
   auto logger = getLogger();
-  logger->info("init port: %d, send_timeout: %d, recc_timeout: %d", this->port, this->send_timeout, this->recv_timeout);
+  logger->info("init port: %d, send_timeout: %d, recv_timeout: %d", this->port, this->send_timeout, this->recv_timeout);
 
   // init index
   logger->info("start index service");
@@ -50,7 +50,7 @@ int BidServerManager::init(std::string config_filename) {
 }
 
 void BidServerManager::run() {
-  std::string server_address("0.0.0.0:50051");
+  std::string server_address("0.0.0.0:" + std::to_string(this->port));
 
   auto bid_service = std::make_shared<BidService>();
 //  bid_service->bidAdTest();

@@ -1,10 +1,4 @@
-port: 1081
+port: 50051
 thread_num: 10
 send_timeout: 300
-rece:timeout: 300
-
-skills:
-  c++: 1
-  java: 1
-  android: 1
-  python: 1
+recv_timeout: 300

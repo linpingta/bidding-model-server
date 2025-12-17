@@ -3,6 +3,7 @@
 
 #include "bid_handler.h"
 #include <algorithm>
+#include <ctime>
 
 void BidHandler::Init() {
   index_manager_ = IndexManager::getInstance();
@@ -78,10 +79,22 @@ std::unordered_map<int32_t, Campaign> BidHandler::campaignFilter(const BidReqDat
   auto campaignIndex = dynamic_cast<CampaignIndex*>(index);
   auto campaignMap = campaignIndex->getCampaignMap();
 
-  for (const auto& item: campaignMap) {
-    // filter campaign by req
-    // TODO
+  // Get current timestamp
+  time_t now = time(0);
+  int32_t current_time = static_cast<int32_t>(now);
 
+  for (const auto& item: campaignMap) {
+    const Campaign& campaign = item.second;
+    
+    // Filter 1: Campaign must be active (between start and end time)
+    if (campaign.start_time > current_time || campaign.end_time < current_time) {
+      logger_->info("Campaign %d filtered: not in active time range", campaign.id);
+      continue;
+    }
+    
+    // Add any additional campaign filters here based on bidReqData
+    // For example, you could filter by adx_id, media_id, etc.
+    
     filteredMap[item.first] = item.second;
   }
 
@@ -96,14 +109,32 @@ std::unordered_map<int32_t, Ad> BidHandler::adFilter(const BidReqData& bidReqDat
   auto adMap = adIndex->getAdMap();
 
   for (const auto& item: adMap) {
-    // filter ad by campaign
-    if (campaignMap.find(item.second.campaign_id) == campaignMap.end()) {
+    const Ad& ad = item.second;
+    
+    // Filter 1: Ad must belong to a filtered campaign
+    if (campaignMap.find(ad.campaign_id) == campaignMap.end()) {
       continue;
     }
-
-    // filter ad
-    // TODO
-
+    
+    // Filter 2: Ad must have sufficient budget
+    if (ad.budget <= 0) {
+      logger_->info("Ad %d filtered: insufficient budget", ad.id);
+      continue;
+    }
+    
+    // Filter 3: Ad price must meet or exceed the price floor
+    if (ad.price < static_cast<int64_t>(bidReqData.price_floor * 1000000)) {  // Convert to micro-units
+      logger_->info("Ad %d filtered: price %ld below floor %f", ad.id, ad.price, bidReqData.price_floor);
+      continue;
+    }
+    
+    // Filter 4: Ad must match the ad slot type if specified
+    if (bidReqData.ad_slot_type > 0) {
+      // Assuming ad type and slot type are compatible (this is a placeholder)
+      // You would need to add ad_type field to Ad class for proper filtering
+      logger_->info("Ad %d: slot type matching not implemented", ad.id);
+    }
+    
     filteredMap[item.first] = item.second;
   }
 
