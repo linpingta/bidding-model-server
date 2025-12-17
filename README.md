@@ -7,36 +7,58 @@ The DSP Bidding Model Server is a real-time bidding (RTB) service built with C++
 ## Table of Contents
 
 - [Features](#features)
+- [Architecture](#architecture)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - [Configuration](#configuration)
+  - [API](#api)
+  - [Running the Server](#running-the-server)
 - [Status](#status)
 - [License](#license)
 
 ## Features
 
 - **gRPC Communication**: Uses gRPC for high-performance, reliable communication between clients and server.
-- **Dual-Buffer Indexing**: Implements a dual-buffer system for managing ad and campaign data, ensuring low latency and high throughput.
+- **Dual-Buffer Indexing**: Implements a dual-buffer system for managing ad and campaign data through IndexManager, ensuring low latency and high throughput.
 - **Ad Campaign Management**: Manages ad campaigns and ad information with efficient indexing.
-- **Bid Request Processing**: Processes bid requests and returns optimal bids based on configured rules.
-- **Logging System**: Integrates log4cpp for comprehensive logging.
+- **Bid Request Processing**: Complete bidding pipeline including request filtering, campaign filtering, ad filtering, ranking, and response generation.
+- **Logging System**: Custom SimpleLogger implementation for comprehensive logging with different log levels.
 - **YAML Configuration**: Uses YAML for easy configuration management.
+- **Singleton Pattern**: IndexManager implemented as a singleton for global access to indexing services.
 - **Scalable Design**: Built to handle high volumes of concurrent requests.
+
+## Architecture
+
+The server follows a modular architecture:
+
+1. **Main Entry Point** (`main.cpp`): Initializes logger, creates BidServerManager, and starts the service.
+2. **Server Manager** (`bid_server_manager.h/cpp`): Manages server initialization, configuration loading, and service lifecycle.
+3. **gRPC Service** (`bid_service.h/cpp`): Implements the AdBidderService with bidAd RPC method.
+4. **Bid Handler** (`bid_handler.h/cpp`): Core bidding logic including request processing, filtering, ranking, and response generation.
+5. **Indexing System**:
+   - `IndexManager`: Singleton that manages dual-buffer indexing and updates
+   - `CampaignIndex`: Manages campaign data
+   - `AdIndex`: Manages ad data
+6. **Data Structures** (`common.h`): Defines bid request/response data structures and AdSelector.
+7. **Logging** (`simple_logger.h`): Custom logging implementation with different log levels.
 
 ## Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have met the following requirements: 
+Before you begin, ensure you have met the following requirements:
 - cmake
 - grpc
 - protobuf
-grpc and protobuf should be matched
+- yaml-cpp
+
+Note: grpc and protobuf versions should be compatible.
 
 ### Installation
 
-To get the DSP Bidding Model Server up and running with a C++ codebase, follow these steps:
+To get the DSP Bidding Model Server up and running, follow these steps:
 
 1. Clone this repository to your local machine:
 
@@ -49,18 +71,18 @@ To get the DSP Bidding Model Server up and running with a C++ codebase, follow t
 
    - **On Windows**: Use vcpkg to install dependencies
      ```bash
-     vcpkg install protobuf grpc yaml-cpp log4cpp --triplet x64-windows
+     vcpkg install protobuf grpc yaml-cpp --triplet x64-windows
      ```
    - **On Linux/Mac**: Use your package manager to install dependencies
      ```bash
      # Ubuntu/Debian
-     sudo apt-get install libprotobuf-dev libgrpc++-dev libyaml-cpp-dev liblog4cpp5-dev
+     sudo apt-get install libprotobuf-dev libgrpc++-dev libyaml-cpp-dev
      
      # macOS with Homebrew
-     brew install protobuf grpc yaml-cpp log4cpp
+     brew install protobuf grpc yaml-cpp
      ```
 
-3. **Build the C++ Server**:
+3. **Build the Server**:
 
    - **On Windows**: Use the provided build.bat script
      ```bash
@@ -75,41 +97,58 @@ To get the DSP Bidding Model Server up and running with a C++ codebase, follow t
      cmake --build . --config Release
      ```
 
-4. **Run the Server**:
-
-   After successfully building the C++ server, run it:
-
-   - **On Windows**: 
-     ```bash
-     bin\Release\bidding_model_server.exe
-     ```
-   - **On Linux/Mac**: 
-     ```bash
-     ./bin/bidding_model_server
-     ```
-
-Ensure that your C++ server executable is named accordingly, and replace the path with the correct path to your executable.
-
 ## Usage
 
 ### Configuration
 
-The server reads configuration from `config.yaml` file, which should be located in the same directory as the executable. You can modify this file to configure:
+The server reads configuration from `config.yaml` file, which should be located in the same directory as the executable. The configuration includes:
 
-- Server listening address and port
-- Logging settings
+- Server port
+- Timeout settings
 - Index configuration paths
-- Other server parameters
 
-### Using the gRPC API
+### API
 
-To use the DSP Bidding Model Server in your RTB application, follow these steps:
+The server exposes a gRPC API defined in `proto/ad_bid.proto`:
 
-1. **Import the gRPC Client Library** into your project
-2. **Generate Client Code** from the proto file `proto/ad_bid.proto`
-3. **Establish a Connection** to the server using gRPC
-4. **Send Bid Requests** to the server using the `bidAd` method
-5. **Process Bid Responses** returned by the server
+```protobuf
+syntax = "proto3";
+
+package ad;
+
+service AdBidderService {
+    rpc bidAd (BidRequest) returns (BidResponse);
+}
+
+// Message definitions follow...
+```
+
+#### BidRequest
+- `id`: Request unique identifier
+- `publisher`: Publisher information
+- `site`: Website information
+- `device`: User device information
+- `user`: User information
+- `impressions`: List of ad slot information
+
+#### BidResponse
+- `id`: Request identifier for correlation
+- `seat_bids`: List of seat bids containing individual bids
+
+### Running the Server
+
+After successfully building the server, run it:
+
+- **On Windows**: 
+  ```bash
+  bin\Release\bidding_model_server.exe
+  ```
+- **On Linux/Mac**: 
+  ```bash
+  ./bin/bidding_model_server
+  ```
+
+The server will start listening on `0.0.0.0:50051` by default.
 
 ### Example Client Code
 
@@ -123,6 +162,10 @@ using grpc::Status;
 using ad::AdBidderService;
 using ad::BidRequest;
 using ad::BidResponse;
+using ad::Device;
+using ad::User;
+using ad::Site;
+using ad::Impression;
 
 class AdBidClient {
 public:
@@ -150,10 +193,41 @@ int main() {
   
   BidRequest request;
   request.set_id("test_request_123");
-  // Set other request fields...
+  
+  // Set site information
+  Site* site = request.mutable_site();
+  site->set_id("site_123");
+  site->set_name("Test Site");
+  
+  // Set device information
+  Device* device = request.mutable_device();
+  device->set_id("device_123");
+  device->set_os("android");
+  device->set_model("Pixel 5");
+  
+  // Set user information
+  User* user = request.mutable_user();
+  user->set_id("user_123");
+  user->set_gender("male");
+  user->set_age(30);
+  
+  // Add impression
+  Impression* impression = request.add_impressions();
+  impression->set_id("imp_123");
+  impression->set_ad_type("1");
+  impression->set_bid_floor(0.5);
   
   BidResponse response = client.Bid(request);
   std::cout << "Received bid response: " << response.id() << std::endl;
+  if (response.seat_bids_size() > 0) {
+    const auto& seat_bid = response.seat_bids(0);
+    if (seat_bid.bids_size() > 0) {
+      const auto& bid = seat_bid.bids(0);
+      std::cout << "Bid ID: " << bid.id() << std::endl;
+      std::cout << "Ad ID: " << bid.adid() << std::endl;
+      std::cout << "Price: " << bid.price() << std::endl;
+    }
+  }
   
   return 0;
 }
@@ -161,7 +235,18 @@ int main() {
 
 ## Status
 
-The project is still in progress, we will update examples and fix bugs.
+The project is currently in development phase with core functionality implemented:
+- ✅ Basic server framework with gRPC communication
+- ✅ Index management system with dual-buffer support
+- ✅ Complete bidding pipeline
+- ✅ Logging and configuration management
+- ✅ YAML configuration support
+
+TODO:
+- Complete implementation of campaign and ad filtering logic
+- Add more comprehensive tests
+- Implement advanced bidding strategies
+- Add monitoring and metrics collection
 
 ## License
 
