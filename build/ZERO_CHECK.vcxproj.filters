@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\tchu\PycharmProjects\bidding-model-server\build\CMakeFiles\7e14fef429611254b39e4788620b3437\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B825B9CF-4FA0-3B42-AF8C-FEC1DB5DAE20}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

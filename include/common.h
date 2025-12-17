@@ -79,28 +79,4 @@ struct BidRspData {
   }
 };
 
-//int main() {
-//  // 创建一个 BidData 对象
-//  BidData bid("request123", "publisher456", 0.5);
-//
-//  // 添加广告位信息
-//  bid.addAdPlacement("adPlacement1");
-//  bid.addAdPlacement("adPlacement2");
-//
-//  // 获取并打印 BidData 对象的信息
-//  std::cout << "Request ID: " << bid.getRequestId() << std::endl;
-//  std::cout << "Publisher ID: " << bid.getPublisherId() << std::endl;
-//  std::cout << "Bid Floor: " << bid.getBidFloor() << std::endl;
-//
-//  std::vector<std::string> adPlacements = bid.getAdPlacements();
-//  std::cout << "Ad Placements: ";
-//  for (const std::string& placement : adPlacements) {
-//    std::cout << placement << " ";
-//  }
-//  std::cout << std::endl;
-//
-//  return 0;
-//}
-
-
 #endif //BIDDING_MODEL_SERVER_COMMON_CONST_H_

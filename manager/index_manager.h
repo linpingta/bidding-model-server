@@ -5,9 +5,28 @@
 #define BIDDING_MODEL_SERVER_MANAGER_INDEX_MANAGER_H_
 
 #include <iostream>
-#include <pthread.h>
 #include <mutex>
-#include <unistd.h> // For sleep function
+#include <thread>
+#include <chrono> // For sleep function
+
+// Windows thread support
+#ifdef _WIN32
+#include <windows.h>
+typedef HANDLE pthread_t;
+typedef CRITICAL_SECTION pthread_mutex_t;
+#define PTHREAD_MUTEX_INITIALIZER {0}
+#define pthread_mutex_init(mutex, attr) InitializeCriticalSection(mutex)
+#define pthread_mutex_lock(mutex) EnterCriticalSection(mutex)
+#define pthread_mutex_unlock(mutex) LeaveCriticalSection(mutex)
+#define pthread_mutex_destroy(mutex) DeleteCriticalSection(mutex)
+#define pthread_create(thread, attr, start_routine, arg) \
+    (*thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine, arg, 0, NULL)) != NULL ? 0 : -1
+#define pthread_join(thread, retval) WaitForSingleObject(thread, INFINITE)
+#define sleep(seconds) Sleep(seconds * 1000)
+#else
+#include <pthread.h>
+#include <unistd.h>
+#endif
 
 #include "index.h"
 #include "ad_index.h"

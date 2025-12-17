@@ -64,7 +64,13 @@ private:
     std::string getCurrentTime() {
         time_t now = time(0);
         char buf[80];
+        #ifdef _WIN32
+        struct tm tm;
+        localtime_s(&tm, &now);
+        strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tm);
+        #else
         strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
+        #endif
         return std::string(buf);
     }
     

@@ -1,0 +1,95 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDependentOption.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindDependencyMacro.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/CheckLibraryExists.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/FindOpenSSL.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/FindThreads.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/FindZLIB.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CMakeCLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CMakeCXXLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CMakeCommonLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CheckSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Linker/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Linker/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Linker/MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Linker/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Linker/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Linker/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Windows-Initialize.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/Windows.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/Platform/WindowsPaths.cmake
+C:/Program Files/CMake/share/cmake-4.2/Modules/SelectLibraryConfigurations.cmake
+C:/Users/tchu/PycharmProjects/bidding-model-server/CMakeLists.txt
+C:/Users/tchu/PycharmProjects/bidding-model-server/build/CMakeFiles/4.2.1/CMakeCCompiler.cmake
+C:/Users/tchu/PycharmProjects/bidding-model-server/build/CMakeFiles/4.2.1/CMakeCXXCompiler.cmake
+C:/Users/tchu/PycharmProjects/bidding-model-server/build/CMakeFiles/4.2.1/CMakeRCCompiler.cmake
+C:/Users/tchu/PycharmProjects/bidding-model-server/build/CMakeFiles/4.2.1/CMakeSystem.cmake
+C:/Users/tchu/PycharmProjects/bidding-model-server/config.yaml
+C:/Users/tchu/PycharmProjects/bidding-model-server/data/index_config_0
+C:/Users/tchu/PycharmProjects/bidding-model-server/data/index_config_1
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/absl/abslConfig.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/absl/abslConfigVersion.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/absl/abslTargets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/absl/abslTargets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/absl/abslTargets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/c-ares/c-ares-config-version.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/c-ares/c-ares-config.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/c-ares/c-ares-targets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/c-ares/c-ares-targets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/c-ares/c-ares-targets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCConfig.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCConfigVersion.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCPluginTargets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCPluginTargets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCPluginTargets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCTargets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCTargets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/gRPCTargets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/modules/Findc-ares.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/grpc/modules/Findre2.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/openssl/vcpkg-cmake-wrapper.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-config-version.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-config.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-generate.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-module.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-options.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-targets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-targets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/protobuf-targets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/protobuf/vcpkg-cmake-wrapper.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/re2/re2Config.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/re2/re2ConfigVersion.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/re2/re2Targets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/re2/re2Targets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/re2/re2Targets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-config.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-targets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-targets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-targets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/yaml-cpp/yaml-cpp-config-version.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/yaml-cpp/yaml-cpp-config.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/yaml-cpp/yaml-cpp-targets-debug.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/yaml-cpp/yaml-cpp-targets-release.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/yaml-cpp/yaml-cpp-targets.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/installed/x64-windows/share/zlib/vcpkg-cmake-wrapper.cmake
+C:/Users/tchu/PycharmProjects/vcpkg/scripts/buildsystems/vcpkg.cmake

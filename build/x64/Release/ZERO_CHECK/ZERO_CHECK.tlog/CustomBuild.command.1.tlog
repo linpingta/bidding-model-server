@@ -1,0 +1,10 @@
+^C:\USERS\TCHU\PYCHARMPROJECTS\BIDDING-MODEL-SERVER\BUILD\CMAKEFILES\7E14FEF429611254B39E4788620B3437\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/tchu/PycharmProjects/bidding-model-server -BC:/Users/tchu/PycharmProjects/bidding-model-server/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/tchu/PycharmProjects/bidding-model-server/build/bidding_model_server.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

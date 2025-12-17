@@ -3,7 +3,6 @@
 
 #include "index_manager.h"
 #include <iostream>
-#include <pthread.h>
 #include <string>
 
 #include "../include/common.h"
