@@ -5,8 +5,12 @@
 #define BIDDING_MODEL_SERVER_HANDLER_BID_HANDLER_H_
 
 #include <vector>
+#include <unordered_map>
 #include "../include/common.h"
 #include "../manager/index_manager.h"
+#include "../manager/campaign_index.h"
+#include "../manager/ad_index.h"
+#include "../include/log4cpp/Category.hh"
 
 class BidHandler {
  public:

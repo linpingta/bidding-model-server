@@ -2,64 +2,121 @@ cmake_minimum_required(VERSION 3.14)
 project(bidding_model_server)
 
 set(CMAKE_CXX_STANDARD 14)
-
-#find_package(Protobuf REQUIRED)
-## 检查是否找到了protobuf库
-#if(PROTOBUF_FOUND)
-#    message(STATUS "Found Protobuf: ${PROTOBUF_VERSION}")
-#else()
-#    message(FATAL_ERROR "Protobuf not found")
-#endif()
-
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(OPENSSL_ROOT_DIR "${PROJECT_SOURCE_DIR}/3rd-party/openssl_test")
-#set(PROTOBUF_ROOT "${PROJECT_SOURCE_DIR}/3rd-party/protobuf-24.3")
-#set(PROTOBUF_ROOT "/opt/homebrew/Cellar/protobuf/24.3/")
-list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/Cellar/protobuf/24.3/")
+# Option to use system libraries or local libraries
+option(USE_SYSTEM_LIBS "Use system installed libraries" ON)
 
-##set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/3rd-party/openssl_test" ${CMAKE_PREFIX_PATH})
-#
-#find_package(protobuf CONFIG)
-#if(NOT Protobuf_FOUND)
-#    find_package(protobuf REQUIRED)
-#endif()
-##find_package(protobuf CONFIG REQUIRED)
-#set(PROTOBUF_LIBRARY "protobuf::libprotobuf")
-#if(NOT protobuf_PROTOC_EXE)
-#    set(protobuf_PROTOC_EXE "protobuf::protoc")
-#endif()
-#if(NOT TARGET protobuf::protoc)
-#    message(FATAL_ERROR "Missing Protobuf compiler.")
-#endif()
+# Find dependencies
+find_package(protobuf CONFIG QUIET)
+if(NOT protobuf_FOUND)
+    find_package(Protobuf REQUIRED)
+    set(protobuf_LIBRARIES ${Protobuf_LIBRARIES})
+    set(protobuf_INCLUDE_DIRS ${Protobuf_INCLUDE_DIRS})
+    set(protobuf_PROTOC_EXECUTABLE ${Protobuf_PROTOC_EXECUTABLE})
+    set(protobuf_FOUND TRUE)
+else()
+    set(protobuf_LIBRARIES protobuf::libprotobuf)
+    set(protobuf_INCLUDE_DIRS ${protobuf_INCLUDE_DIRS})
+    set(protobuf_PROTOC_EXECUTABLE protobuf::protoc)
+endif()
 
-find_package(gRPC CONFIG REQUIRED)
+find_package(gRPC CONFIG QUIET)
+if(NOT gRPC_FOUND)
+    find_package(GRPC REQUIRED)
+    set(gRPC_LIBRARIES ${GRPC_LIBRARIES})
+    set(gRPC_INCLUDE_DIRS ${GRPC_INCLUDE_DIRS})
+    set(gRPC_FOUND TRUE)
+else()
+    set(gRPC_LIBRARIES gRPC::grpc++)
+    set(gRPC_INCLUDE_DIRS ${gRPC_INCLUDE_DIRS})
+endif()
+
 find_package(OpenSSL REQUIRED)
+find_package(yaml-cpp CONFIG QUIET)
+if(NOT yaml-cpp_FOUND)
+    find_package(YAML-CPP REQUIRED)
+    set(yaml-cpp_LIBRARIES ${YAML-CPP_LIBRARIES})
+    set(yaml-cpp_INCLUDE_DIRS ${YAML-CPP_INCLUDE_DIRS})
+    set(yaml-cpp_FOUND TRUE)
+else()
+    set(yaml-cpp_LIBRARIES yaml-cpp::yaml-cpp)
+    set(yaml-cpp_INCLUDE_DIRS ${yaml-cpp_INCLUDE_DIRS})
+endif()
 
-#if(PROTOBUF_FOUND)
-#    message("Found Protobuf: ${PROTOBUF_INCLUDE_DIR}")
-#    message("Protobuf Libraries: ${PROTOBUF_LIBRARIES}")
-#else()
-#    message(FATAL_ERROR "Protobuf not found.")
-#endif()
+# Find log4cpp
+find_path(LOG4CPP_INCLUDE_DIR log4cpp/Category.hh)
+find_library(LOG4CPP_LIBRARY NAMES log4cpp liblog4cpp)
+if(NOT LOG4CPP_INCLUDE_DIR OR NOT LOG4CPP_LIBRARY)
+    message(FATAL_ERROR "log4cpp not found. Please install log4cpp.")
+endif()
 
-#message(STATUS "Using protobuf ${protobuf_VERSION}")
-message(STATUS "Using gRPC ${gRPC_VERSION}")
+message(STATUS "Using protobuf: ${protobuf_INCLUDE_DIRS}, ${protobuf_LIBRARIES}")
+message(STATUS "Using gRPC: ${gRPC_INCLUDE_DIRS}, ${gRPC_LIBRARIES}")
+message(STATUS "Using yaml-cpp: ${yaml-cpp_INCLUDE_DIRS}, ${yaml-cpp_LIBRARIES}")
+message(STATUS "Using log4cpp: ${LOG4CPP_INCLUDE_DIR}, ${LOG4CPP_LIBRARY}")
 
-link_directories(${PROJECT_SOURCE_DIR}/lib/yaml-cpp)
-link_directories(${PROJECT_SOURCE_DIR}/lib/log4cpp)
-#link_directories(/opt/homebrew/Cellar/protobuf/24.3/lib/)
+# Include directories
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include
+    ${protobuf_INCLUDE_DIRS}
+    ${gRPC_INCLUDE_DIRS}
+    ${yaml-cpp_INCLUDE_DIRS}
+    ${LOG4CPP_INCLUDE_DIR}
+)
 
-#include_directories(${PROJECT_SOURCE_DIR}/3rd-party/openssl_test/include)
-#link_directories(${PROJECT_SOURCE_DIR}/3rd-party/openssl_test/lib)
-#link_libraries(ssl crypto)
+# Source files
+set(SOURCES
+    main.cpp
+    include/common.cpp
+    manager/bid_server_manager.cpp
+    manager/index_manager.cpp
+    manager/index.cpp
+    manager/ad_index.cpp
+    manager/campaign_index.cpp
+    service/bid_service.cpp
+    proto/ad_bid.pb.cc
+    proto/ad_bid.grpc.pb.cc
+)
 
-add_executable(bidding_model_server main.cpp include/common.h manager/bid_server_manager.cpp manager/bid_server_manager.h include/const.h include/common.cpp service/bid_service.cpp service/bid_service.h manager/index_manager.cpp manager/index_manager.h manager/index.h manager/index.cpp manager/ad_index.cpp manager/ad_index.h)
-#add_executable(bidding_model_server main.cpp include/common.h manager/bid_server_manager.cpp manager/bid_server_manager.h include/const.h include/common.cpp proto/ad_bid.pb.cc proto/ad_bid.pb.h)
-#add_executable(bidding_model_server main.cpp include/common.h manager/bid_server_manager.cpp manager/bid_server_manager.h include/const.h include/common.cpp proto/ad_bid.pb.cc proto/ad_bid.pb.h proto/ad_bid.grpc.pb.cc proto/ad_bid.grpc.pb.h)
-#add_executable(bidding_model_server main.cpp include/common.h manager/bid_server_manager.cpp manager/bid_server_manager.h include/const.h include/common.cpp service/bid_service.cpp service/bid_service.h proto/ad_bid.pb.cc proto/ad_bid.pb.h)
+# Header files (for IDE support)
+set(HEADERS
+    include/common.h
+    include/const.h
+    manager/bid_server_manager.h
+    manager/index_manager.h
+    manager/index.h
+    manager/ad_index.h
+    manager/campaign_index.h
+    service/bid_service.h
+    proto/ad_bid.pb.h
+    proto/ad_bid.grpc.pb.h
+)
 
-#target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include /opt/homebrew/Cellar/protobuf/24.3/include)
-target_link_libraries(bidding_model_server libyaml-cpp.a liborocos-log4cpp.dylib gRPC::grpc++ OpenSSL::SSL protobuf::libprotobuf)
-#target_link_libraries(bidding_model_server libyaml-cpp.a liborocos-log4cpp.dylib gRPC::grpc++ OpenSSL::SSL libprotobuf.dylib)
+# Create executable
+add_executable(bidding_model_server ${SOURCES} ${HEADERS})
+
+# Link libraries
+target_link_libraries(bidding_model_server
+    ${protobuf_LIBRARIES}
+    ${gRPC_LIBRARIES}
+    ${yaml-cpp_LIBRARIES}
+    ${LOG4CPP_LIBRARY}
+    OpenSSL::SSL
+    OpenSSL::Crypto
+)
+
+# Set output directory
+set_target_properties(bidding_model_server PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin
+)
+
+# Copy configuration files to output directory
+configure_file(config.yaml ${PROJECT_SOURCE_DIR}/bin/config.yaml COPYONLY)
+configure_file(data/index_config_0 ${PROJECT_SOURCE_DIR}/bin/data/index_config_0 COPYONLY)
+configure_file(data/index_config_1 ${PROJECT_SOURCE_DIR}/bin/data/index_config_1 COPYONLY)
+
+# Create data directory in output
+add_custom_command(TARGET bidding_model_server POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/bin/data
+)
